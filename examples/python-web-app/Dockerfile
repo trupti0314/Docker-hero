@@ -1,33 +1,20 @@
-# Use an official Python image as a base
-FROM python:3.12-slim
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
  
-# Install system dependencies for creating a virtual environment
-RUN apt-get update && apt-get install -y python3-venv python3-pip
- 
-# Set the working directory inside the container
+# Set the working directory in the container
 WORKDIR /app
  
-# Copy the requirements file into the container
-COPY requirements.txt .
+# Copy the current directory contents into the container at /app
+COPY . /app/
  
-# Create a virtual environment inside the container
-RUN python3 -m venv /opt/venv
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
  
-# Activate the virtual environment and install dependencies
-RUN /opt/venv/bin/pip install -r requirements.txt
- 
-# Add the virtual environment to the PATH
-ENV PATH="/opt/venv/bin:$PATH"
- 
-# Copy the rest of the application code into the container
-COPY . .
- 
-# Expose port (example for Django)
+# Expose the port the app runs on
 EXPOSE 8000
  
-# Command to run your Django app (or replace with your app's start command)
+# Define environment variable
+ENV PYTHONUNBUFFERED 1
+ 
+# Run the application
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-
-
-
-
